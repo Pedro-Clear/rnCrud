@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import UserList from './views/UserList';
+import UserForm from './views/UserForm';
+import {Button, Icon} from 'react-native-elements';
+import {UsersProvider} from './context/UsersContext';
 
-function App() {
+const Stack = createStackNavigator();
+
+export default props => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UsersProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="UserList"
+          screenOptions={screenOptions}>
+          <Stack.Screen
+            name="UserList"
+            component={UserList}
+            options={({navigation}) => {
+              return {
+                title: 'Lista de Usuários',
+                headerRight: () => (
+                  <Button
+                    onPress={() => navigation.navigate('UserForm')}
+                    type="clear"
+                    icon={<Icon name="add" size={25} color="white" />}
+                  />
+                ),
+              };
+            }}
+          />
+          <Stack.Screen
+            name="UserForm"
+            component={UserForm}
+            options={{title: 'Form de users'}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UsersProvider>
   );
-}
+};
 
-export default App;
+const screenOptions = {
+  headerStyle: {
+    backgroundColor: '#f4511e',
+  },
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+};
